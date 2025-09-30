@@ -1,26 +1,34 @@
 import express, { Request, Response } from 'express';
 import helmet from 'helmet';
-import logger from './utils/logger';
+import path from 'path';
+import { SyncService } from './services/sync.service';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Apply security middleware
-app.use(helmet());
+// --- Middleware ---
+app.use(helmet()); // Basic security headers
+app.use(express.json()); // Parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
-// Apply JSON and URL-encoded body parsers
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// --- Static Files ---
+// Serve the 'public' directory for our UI
+app.use(express.static(path.join(__dirname, '../public')));
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello from the secure server!');
+// --- API Endpoints ---
+app.post('/api/sync', async (req: Request, res: Response) => {
+  try {
+    const syncService = new SyncService();
+    // In a real app, the patient ID might come from the request body
+    const log = await syncService.runSync('patient-123');
+    res.status(200).json({ log });
+  } catch (error) {
+    console.error('API Error:', error);
+    res.status(500).json({ log: ['An unexpected error occurred on the server.'] });
+  }
 });
 
-// Health check endpoint
-app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({ status: 'ok', uptime: process.uptime() });
-});
-
+// --- Server Start ---
 app.listen(port, () => {
-  logger.info(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at http://localhost:${port}`);
 });

@@ -1,18 +1,22 @@
-// This service will handle all interactions with the Ensora Echo API.
-// Responsibilities include:
-// - Fetching patient demographics
-// - Fetching billing data (CPT/charges)
-// - Creating/updating data in Ensora as needed
+// MOCK SERVICE
+// This service simulates interactions with the Ensora Echo API.
 
 export class EnsoraService {
-  constructor() {
-    // Initialize any necessary clients or configurations
-  }
+  constructor() {}
 
-  // Placeholder for fetching a patient
+  /**
+   * Simulates fetching a patient from Ensora.
+   * @returns A promise that resolves with mock patient data.
+   */
   async getPatient(patientId: string): Promise<any> {
-    console.log(`Fetching patient ${patientId} from Ensora...`);
-    // Actual API call will go here
-    return { id: patientId, name: 'John Doe' };
+    console.log(`[EnsoraService] Fetching patient ${patientId}...`);
+    // In a real implementation, this would be an API call.
+    // For this demo, we return a hardcoded patient object.
+    return {
+      id: patientId,
+      name: 'John Doe',
+      dob: '1985-04-12',
+      cptCodes: ['92557', 'V5261'], // Comprehensive audiometry, Binaural BTE HA
+    };
   }
 }
